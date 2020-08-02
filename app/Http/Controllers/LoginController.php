@@ -27,7 +27,10 @@ class LoginController extends Controller
             return response()->json(['error' => 'No se puedo crear token'], 500);
         }
         $token = auth()->claims(['name' => auth()->user()->name])->attempt($credentials);
-        return response()->json(compact('token'));
+        $user = User::where('email',$credentials['email'])->first();
+        $user->token = $token; 
+
+        return response()->json(compact('user'));
     }
     public function getAuthenticatedUser()
     {
