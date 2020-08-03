@@ -28,7 +28,10 @@ class LoginController extends Controller
         }
         $token = auth()->claims(['name' => auth()->user()->name])->attempt($credentials);
         $user = User::where('email',$credentials['email'])->first();
-        $user->token = $token; 
+        $user->token = $token;
+        $user->rol = $user->getRoleNamesRaw();
+        // $user->permisos = $user->getAllPermissions();
+
 
         return response()->json(compact('user'));
     }
@@ -50,7 +53,8 @@ class LoginController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'nombres' => 'required|string|max:255',
+            'apellidos' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
         ]);
@@ -60,10 +64,13 @@ class LoginController extends Controller
         }
 
         $user = User::create([
-            'name' => $request->get('name'),
+            'nombres' => $request->get('nombres'),
+            'apellidos' => $request->get('apellidos'),
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
         ]);
+        $user->assignRole('administrador');
+
 
 
         $token = JWTAuth::fromUser($user);
