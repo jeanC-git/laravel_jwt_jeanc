@@ -22,6 +22,13 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     /*AÑADE AQUI LAS RUTAS QUE QUIERAS PROTEGER CON JWT*/
     Route::get('user-data', 'LoginController@getAuthenticatedUser');
 
+    /*CONTROL DE ROLES*/
+    Route::apiResource('apiRoles', 'Administrador\ApiRoles');
+    Route::apiResource('apiUsuarios', 'Administrador\ApiUsuarios');
+    Route::apiResource('apiPermisos', 'Administrador\ApiPermisos');
+
+
+
 });
 
 

@@ -13,9 +13,5 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function userData()
-    {
-        $payload = auth()->payload();
-        return JWTAuth::getPayload()->toArray();;
-    }
+
 }

@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -10,18 +9,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use Notifiable , HasRoles;
-
-
-    protected $guard_name = 'api';
-
+    use Notifiable;
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'nombres', 'apellidos', 'email', 'password',
+        'nombres', 'apellidos', 'email', 'password', 'rol_id'
     ];
 
     /**
@@ -41,6 +36,12 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public function rol()
+    {
+        return $this->belongsTo('App\Roles');
+    }
 
     /*
         Métodos para el uso de JWT
