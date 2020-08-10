@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
+
 
     use App\User;
     use Illuminate\Http\Request;
@@ -27,8 +29,15 @@ class LoginController extends Controller
         $token = auth()->claims(['name' => auth()->user()->name])->attempt($credentials);
         $user = User::where('email',$credentials['email'])->first();
         $user->token = $token;
-        $user->nombreRol = $user->rol->nombreRol;
-        $user->permisos = $user->rol->permisos;
+        $rol_id = $user->rol->id;
+        $permisos = DB::table('permisos')
+                    ->join('operaciones','operaciones.id', '=', 'permisos.operacion_id')
+                    ->join('modulos','modulos.id', '=', 'operaciones.modulo_id')
+                    ->join('roles','roles.id', '=', 'permisos.rol_id')
+                    ->where('permisos.rol_id', $rol_id)
+                    ->select('roles.nombreRol', 'operaciones.nombreOperacion', 'operaciones.descripcion', 'modulos.ruta', 'modulos.nombreModulo', 'modulos.icono')
+                    ->get();
+        $user->p = $permisos;
 
         return response()->json(compact('user'));
     }
@@ -54,6 +63,7 @@ class LoginController extends Controller
             'apellidos' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'estado' => 'required',
             'rol_id' => 'required',
         ]);
 
@@ -65,6 +75,7 @@ class LoginController extends Controller
             'nombres' => $request->get('nombres'),
             'apellidos' => $request->get('apellidos'),
             'email' => $request->get('email'),
+            'estado' => 1,
             'password' => Hash::make($request->get('password')),
             'rol_id' => $request->rol_id
         ]);

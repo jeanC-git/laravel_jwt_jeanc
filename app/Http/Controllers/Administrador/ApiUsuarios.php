@@ -40,7 +40,9 @@ class ApiUsuarios extends Controller
             'apellidos' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'estado' => 'required',
             'rol_id' => 'required',
+            'estado' => 'required',
         ]);
 
         if($validator->fails()){
@@ -52,7 +54,10 @@ class ApiUsuarios extends Controller
             'apellidos' => $request->get('apellidos'),
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
-            'rol_id' => $request->get('rol_id')
+            'estado' => 1,
+            'rol_id' => $request->get('rol_id'),
+            'estado' => $request->get('estado'),
+
         ]);
 
         return response()->json(['msg' => 'Usuario creado.'], 200);
@@ -72,6 +77,7 @@ class ApiUsuarios extends Controller
             'apellidos' => 'string|max:255',
             'password' => 'string|min:6|confirmed',
             'rol_id' => 'int',
+            'estado' => 'int',
         ]);
 
         if($validator->fails()){
@@ -82,12 +88,14 @@ class ApiUsuarios extends Controller
         $user->nombres= $request->nombres;
         $user->apellidos= $request->apellidos;
         $user->rol_id= $request->rol_id;
+        $user->estado= $request->estado;
         if (!empty($request->password)) {
             $user->password=  Hash::make($request->get('password'));
         }
         $user->save();
 
-        return response()->json($user, 200);
+        return response()->json(['msg' => 'Usuario actuaxlizado.'], 200);
+
     }
 
     /**

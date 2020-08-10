@@ -26,6 +26,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::apiResource('apiRoles', 'Administrador\ApiRoles');
     Route::apiResource('apiUsuarios', 'Administrador\ApiUsuarios');
     Route::apiResource('apiPermisos', 'Administrador\ApiPermisos');
+    Route::apiResource('apiModulos', 'Administrador\ApiModulos');
+    Route::apiResource('apiPermisosYOperaciones', 'Administrador\ApiPermisosYOperaciones');
 
 
 
